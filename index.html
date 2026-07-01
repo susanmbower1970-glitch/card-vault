@@ -1,12 +1,50 @@
-<h1>Bower Vintage Card Vault</h1>
+<!DOCTYPE html>
 
-<button onclick="loadData()">Load Card Vault</button>
+<html>
 
-<pre id="output"></pre>
+<head>
+
+<title>Bower Vintage Card Vault</title>
+
+</head>
+
+<body style="font-family:Arial; margin:0; background:#f4efe4; color:#2b2118;">
+
+<div style="text-align:center; padding:35px; background:#7b1e1e; color:white;">
+
+<h1>🏆 Bower Vintage Card Vault</h1>
+
+<p>One collection. One lifetime. Preserved forever.</p>
+
+</div>
+
+<div style="max-width:1000px; margin:auto; padding:25px; text-align:center;">
+
+<h2>Collection Dashboard</h2>
+
+<button onclick="loadVault()" style="padding:12px 25px; font-size:18px; border-radius:8px;">
+
+Load The Vault
+
+</button>
+
+<br><br>
+
+<input id="searchBox" onkeyup="searchVault()" placeholder="Search Mantle, Topps, 1975, PSA..."
+
+style="padding:12px; width:80%; max-width:500px; font-size:18px; border-radius:8px; border:1px solid #999;">
+
+<div id="summary" style="margin:25px; font-size:20px; font-weight:bold;"></div>
+
+<div id="cards" style="display:flex; flex-wrap:wrap; gap:18px; justify-content:center;"></div>
+
+</div>
 
 <script>
 
-function loadData() {
+let allRows = [];
+
+function loadVault() {
 
 fetch("https://docs.google.com/spreadsheets/d/e/2PACX-1vQV7ChVBPYdSjWQLF59zz6zBh-eAJFy4Cyr5pj71R6OGUkhVCjpJf-7FqjuypDAX-advzSjqwR3N6KL/pub?output=csv")
 
@@ -14,10 +52,72 @@ fetch("https://docs.google.com/spreadsheets/d/e/2PACX-1vQV7ChVBPYdSjWQLF59zz6zBh
 
 .then(data => {
 
-document.getElementById("output").textContent = data;
+    allRows = data.split("\\n").map(row => row.split(","));
+
+    showRows(allRows);
 
 });
 
 }
 
+function showRows(rows) {
+
+let cards = document.getElementById("cards");
+
+cards.innerHTML = "";
+
+document.getElementById("summary").innerHTML =
+
+"Showing " + rows.length + " rows from the live Google Sheet";
+
+rows.forEach((row, index) => {
+
+    if (index === 0) return;
+
+    let title = row[0] || "Card / Item";
+
+    let detail1 = row[1] || "";
+
+    let detail2 = row[2] || "";
+
+    let detail3 = row[3] || "";
+
+    cards.innerHTML += `
+
+    <div style="background:white; width:260px; padding:18px; border-radius:12px; box-shadow:0 3px 10px #ccc; text-align:left;">
+
+        <h3 style="margin-top:0;">${title}</h3>
+
+        <p>${detail1}</p>
+
+        <p>${detail2}</p>
+
+        <p><strong>${detail3}</strong></p>
+
+    </div>
+
+    `;
+
+});
+
+}
+
+function searchVault() {
+
+let search = document.getElementById("searchBox").value.toLowerCase();
+
+let filtered = allRows.filter(row =>
+
+    row.join(" ").toLowerCase().includes(search)
+
+);
+
+showRows(filtered);
+
+}
+
 </script>
+
+</body>
+
+</html>
