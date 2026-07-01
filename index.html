@@ -14,13 +14,13 @@
 
 <h1>🏆 Bower Vintage Card Vault</h1>
 
-<p>One collection. One lifetime. Preserved forever.</p>
+<p>Searchable collection viewer powered by Google Sheets.</p>
 
 </div>
 
-<div style="max-width:1000px; margin:auto; padding:25px; text-align:center;">
+<div style="max-width:1100px; margin:auto; padding:25px; text-align:center;">
 
-<h2>Collection Dashboard</h2>
+<h2>Card Viewer</h2>
 
 <button onclick="loadVault()" style="padding:12px 25px; font-size:18px; border-radius:8px;">
 
@@ -32,9 +32,9 @@ Load The Vault
 
 <input id="searchBox" onkeyup="searchVault()" placeholder="Search Mantle, Topps, 1975, PSA..."
 
-style="padding:12px; width:80%; max-width:500px; font-size:18px; border-radius:8px; border:1px solid #999;">
+style="padding:12px; width:85%; max-width:550px; font-size:18px; border-radius:8px; border:1px solid #999;">
 
-<div id="summary" style="margin:25px; font-size:20px; font-weight:bold;"></div>
+<div id="summary" style="margin:25px; font-size:18px; font-weight:bold;"></div>
 
 <div id="cards" style="display:flex; flex-wrap:wrap; gap:18px; justify-content:center;"></div>
 
@@ -44,19 +44,87 @@ style="padding:12px; width:80%; max-width:500px; font-size:18px; border-radius:8
 
 let allRows = [];
 
+const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQV7ChVBPYdSjWQLF59zz6zBh-eAJFy4Cyr5pj71R6OGUkhVCjpJf-7FqjuypDAX-advzSjqwR3N6KL/pub?output=csv";
+
 function loadVault() {
 
-fetch("https://docs.google.com/spreadsheets/d/e/2PACX-1vQV7ChVBPYdSjWQLF59zz6zBh-eAJFy4Cyr5pj71R6OGUkhVCjpJf-7FqjuypDAX-advzSjqwR3N6KL/pub?output=csv")
+fetch(SHEET_URL)
 
 .then(response => response.text())
 
 .then(data => {
 
-    allRows = data.split("\\n").map(row => row.split(","));
+    allRows = parseCSV(data);
 
     showRows(allRows);
 
 });
+
+}
+
+function parseCSV(text) {
+
+    let rows = [];
+
+    let current = [];
+
+    let value = "";
+
+    let insideQuotes = false;
+
+    for (let i = 0; i < text.length; i++) {
+
+        let char = text[i];
+
+        let next = text[i + 1];
+
+        if (char === '"' && insideQuotes && next === '"') {
+
+            value += '"';
+
+            i++;
+
+        } else if (char === '"') {
+
+            insideQuotes = !insideQuotes;
+
+        } else if (char === "," && !insideQuotes) {
+
+            current.push(value);
+
+            value = "";
+
+        } else if ((char === "\n" || char === "\r") && !insideQuotes) {
+
+            if (value || current.length) {
+
+                current.push(value);
+
+                rows.push(current);
+
+                current = [];
+
+                value = "";
+
+            }
+
+        } else {
+
+            value += char;
+
+        }
+
+    }
+
+    if (value || current.length) {
+
+        current.push(value);
+
+        rows.push(current);
+
+    }
+
+    return rows;
 
 }
 
@@ -66,33 +134,51 @@ let cards = document.getElementById("cards");
 
 cards.innerHTML = "";
 
+let displayRows = rows.filter(row => row.join("").trim() !== "");
+
 document.getElementById("summary").innerHTML =
 
-"Showing " + rows.length + " rows from the live Google Sheet";
+"Showing " + Math.max(displayRows.length - 1, 0) + " records from the live Google Sheet";
 
-rows.forEach((row, index) => {
+displayRows.forEach((row, index) => {
 
     if (index === 0) return;
 
-    let title = row[0] || "Card / Item";
+    let item = row[0] || "Card / Item";
 
-    let detail1 = row[1] || "";
+    let value = row[1] || "";
 
-    let detail2 = row[2] || "";
+    let notes = row[2] || "";
 
-    let detail3 = row[3] || "";
+    let extra = row[3] || "";
 
     cards.innerHTML += `
 
-    <div style="background:white; width:260px; padding:18px; border-radius:12px; box-shadow:0 3px 10px #ccc; text-align:left;">
+    <div style="
 
-        <h3 style="margin-top:0;">${title}</h3>
+        background:white;
 
-        <p>${detail1}</p>
+        width:280px;
 
-        <p>${detail2}</p>
+        padding:20px;
 
-        <p><strong>${detail3}</strong></p>
+        border-radius:14px;
+
+        box-shadow:0 3px 12px rgba(0,0,0,.18);
+
+        text-align:left;
+
+        border-top:6px solid #7b1e1e;
+
+    ">
+
+        <h3 style="margin-top:0; color:#7b1e1e;">${item}</h3>
+
+        <p style="font-size:20px; font-weight:bold;">${value}</p>
+
+        <p>${notes}</p>
+
+        <p style="font-size:14px; color:#666;">${extra}</p>
 
     </div>
 
@@ -106,11 +192,13 @@ function searchVault() {
 
 let search = document.getElementById("searchBox").value.toLowerCase();
 
-let filtered = allRows.filter(row =>
+let filtered = allRows.filter((row, index) => {
 
-    row.join(" ").toLowerCase().includes(search)
+    if (index === 0) return true;
 
-);
+    return row.join(" ").toLowerCase().includes(search);
+
+});
 
 showRows(filtered);
 
