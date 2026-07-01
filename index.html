@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+!DOCTYPE html>
 
 <html>
 
@@ -44,7 +44,8 @@ style="padding:12px; width:85%; max-width:550px; font-size:18px; border-radius:8
 
 let allRows = [];
 
-const SHEET_URL = "https://docs.google.c
+const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQV7ChVBPYdSjWQLF59zz6zBh-eAJFy4Cyr5pj71R6OGUkhVCjpJf-7FqjuypDAX-advzSjqwR3N6KL/pub?gid=2143494676&single=true&output=csv";
+
 function loadVault() {
 
 fetch(SHEET_URL)
@@ -53,9 +54,9 @@ fetch(SHEET_URL)
 
 .then(data => {
 
-    allRows = parseCSV(data);
+allRows = parseCSV(data);
 
-    showRows(allRows);
+showRows(allRows);
 
 });
 
@@ -63,67 +64,67 @@ fetch(SHEET_URL)
 
 function parseCSV(text) {
 
-    let rows = [];
+let rows = [];
 
-    let current = [];
+let current = [];
 
-    let value = "";
+let value = "";
 
-    let insideQuotes = false;
+let insideQuotes = false;
 
-    for (let i = 0; i < text.length; i++) {
+for (let i = 0; i < text.length; i++) {
 
-        let char = text[i];
+let char = text[i];
 
-        let next = text[i + 1];
+let next = text[i + 1];
 
-        if (char === '"' && insideQuotes && next === '"') {
+if (char === '"' && insideQuotes && next === '"') {
 
-            value += '"';
+value += '"';
 
-            i++;
+i++;
 
-        } else if (char === '"') {
+} else if (char === '"') {
 
-            insideQuotes = !insideQuotes;
+insideQuotes = !insideQuotes;
 
-        } else if (char === "," && !insideQuotes) {
+} else if (char === "," && !insideQuotes) {
 
-            current.push(value);
+current.push(value);
 
-            value = "";
+value = "";
 
-        } else if ((char === "\n" || char === "\r") && !insideQuotes) {
+} else if ((char === "\n" || char === "\r") && !insideQuotes) {
 
-            if (value || current.length) {
+if (value || current.length) {
 
-                current.push(value);
+current.push(value);
 
-                rows.push(current);
+rows.push(current);
 
-                current = [];
+current = [];
 
-                value = "";
+value = "";
 
-            }
+}
 
-        } else {
+} else {
 
-            value += char;
+value += char;
 
-        }
+}
 
-    }
+}
 
-    if (value || current.length) {
+if (value || current.length) {
 
-        current.push(value);
+current.push(value);
 
-        rows.push(current);
+rows.push(current);
 
-    }
+}
 
-    return rows;
+return rows;
 
 }
 
@@ -137,51 +138,67 @@ let displayRows = rows.filter(row => row.join("").trim() !== "");
 
 document.getElementById("summary").innerHTML =
 
-"Showing " + Math.max(displayRows.length - 1, 0) + " records from the live Google Sheet";
+"Showing " + Math.max(displayRows.length - 1, 0) + " records from the live COLLECTION tab";
 
 displayRows.forEach((row, index) => {
 
-    if (index === 0) return;
+if (index === 0) return;
 
-    let item = row[0] || "Card / Item";
+let company = row[0] || "";
 
-    let value = row[1] || "";
+let sport = row[1] || "";
 
-    let notes = row[2] || "";
+let era = row[2] || "";
 
-    let extra = row[3] || "";
+let player = row[3] || "Unknown Player";
 
-    cards.innerHTML += `
+let year = row[4] || "";
 
-    <div style="
+let rookie = row[5] || "";
 
-        background:white;
+let cardNumber = row[6] || "";
 
-        width:280px;
+let photoLink = row[7] || "";
 
-        padding:20px;
+let value = row[11] || "";
 
-        border-radius:14px;
+let gradeStatus = row[15] || "";
 
-        box-shadow:0 3px 12px rgba(0,0,0,.18);
+cards.innerHTML += `
 
-        text-align:left;
+<div style="
 
-        border-top:6px solid #7b1e1e;
+background:white;
 
-    ">
+width:280px;
 
-        <h3 style="margin-top:0; color:#7b1e1e;">${item}</h3>
+padding:20px;
 
-        <p style="font-size:20px; font-weight:bold;">${value}</p>
+border-radius:14px;
 
-        <p>${notes}</p>
+box-shadow:0 3px 12px rgba(0,0,0,.18);
 
-        <p style="font-size:14px; color:#666;">${extra}</p>
+text-align:left;
 
-    </div>
+border-top:6px solid #7b1e1e;
 
-    `;
+">
+
+<h3 style="margin-top:0; color:#7b1e1e;">${year} ${player}</h3>
+
+<p><strong>${company}</strong> • ${sport} • ${era}</p>
+
+<p>Card #: ${cardNumber}</p>
+
+<p>Rookie: ${rookie}</p>
+
+<p style="font-size:20px; font-weight:bold;">${value}</p>
+
+<p style="font-size:14px; color:#666;">${gradeStatus}</p>
+
+</div>
+
+`;
 
 });
 
@@ -193,9 +210,9 @@ let search = document.getElementById("searchBox").value.toLowerCase();
 
 let filtered = allRows.filter((row, index) => {
 
-    if (index === 0) return true;
+if (index === 0) return true;
 
-    return row.join(" ").toLowerCase().includes(search);
+return row.join(" ").toLowerCase().includes(search);
 
 });
 
