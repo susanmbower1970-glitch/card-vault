@@ -259,7 +259,7 @@ html +=`
 
   <div>${card["EST GRADE"] || ""}</div>
 
-  <div class="price">${card["EST VALUE"] || ""}</div>
+  <div class="price">$${card["EST VALUE"] || card["EST GRADED VALUE"] || ""}</div>
 
   <div style="font-size:12px;color:#777;">${card["GRADE STATUS"] || ""}</div>
 </div>
