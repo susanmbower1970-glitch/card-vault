@@ -228,23 +228,24 @@ html +=`
 
 <div class="card">
 
-<a href="${photo}" target="_blank">
+  <a href="${photo}" target="_blank">
 
-<img src="${photo}">
+    <img src="${photo}">
 
-</a>
+  </a>
 
-<h3>${card["PLAYER"] || ""}</h3>
+  <h3>${card["PLAYER"] || ""}</h3>
 
-<div><strong>${card["YEAR"] || ""} ${card["FILTER_CO"] || ""}</strong></div>
+  <div><strong>${card["YEAR"] || ""} ${card["FILTER_CO"] || ""}</strong></div>
 
-<div>${card["FILTER_SPORT"] || ""} • ${card["FILTER_ERA"] || ""}</div>
+  <div>${card["FILTER_SPORT"] || ""} • ${card["FILTER_ERA"] || ""}</div>
 
-<div>${card["EST GRADE"] || ""}</div>
+  <div>${card["EST GRADE"] || ""}</div>
 
-<div class="price">$${card["EST VALUE"] || ""}</div>
+  <div class="price">${card["EST VALUE"] || ""}</div>
 
-<div style="font-size:12px;color:#777;">${card["GRADE STATUS"] || ""}</div>
+  <div style="font-size:12px;color:#777;">${card["GRADE STATUS"] || ""}</div>
+</div>
 
 `;
 
