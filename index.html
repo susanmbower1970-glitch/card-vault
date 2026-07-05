@@ -14,128 +14,185 @@
 
 body{
 
-    margin:0;
+  margin:0;
 
-    font-family:Arial,Helvetica,sans-serif;
+  font-family:Arial,Helvetica,sans-serif;
 
-    background:#f6f3ef;
+  background:#f6f1e8;
 
-    color:#333;
+  color:#2b2118;
 
 }
 
 header{
 
-    background:#6b1e1e;
+  background:#6b1e1e;
 
-    color:white;
+  color:white;
 
-    text-align:center;
+  text-align:center;
 
-    padding:30px;
+  padding:28px 16px;
+
+}
+
+nav{
+
+  text-align:center;
+
+  padding:18px;
+
+  background:#efe3d2;
 
 }
 
 button{
 
-    background:#6b1e1e;
+  margin:6px;
 
-    color:white;
+  padding:10px 18px;
 
-    border:none;
+  border:none;
 
-    padding:10px 20px;
+  border-radius:8px;
 
-    border-radius:6px;
+  background:#6b1e1e;
 
-    cursor:pointer;
+  color:white;
+
+  font-size:15px;
+
+  cursor:pointer;
 
 }
 
 button:hover{
 
-    background:#8b2b2b;
+  background:#8b2b2b;
 
 }
 
-input{
+#searchBox{
 
-    width:420px;
+  display:block;
 
-    max-width:90%;
+  margin:18px auto;
 
-    padding:10px;
+  padding:12px;
 
-    margin:20px;
+  width:90%;
 
-    font-size:16px;
+  max-width:520px;
+
+  font-size:16px;
+
+  border-radius:8px;
+
+  border:1px solid #aaa;
 
 }
 
 #summary{
 
-    margin-bottom:20px;
+  text-align:center;
 
-    font-weight:bold;
+  font-weight:bold;
+
+  margin:15px;
 
 }
 
 #cards{
 
-    display:grid !important;
+  display:grid;
 
-    grid-template-columns:repeat(4, 220px);
+  grid-template-columns:repeat(auto-fill,minmax(230px,1fr));
 
-    gap:20px;
+  gap:20px;
 
-    padding:20px;
+  padding:22px;
 
-    max-width:1000px;
+  max-width:1250px;
 
-    margin:0 auto;
+  margin:auto;
 
-    justify-content:center;
 }
 
 .card{
 
-    background:white;
+  background:white;
 
-    border-radius:12px;
+  border-radius:14px;
 
-    box-shadow:0 3px 10px rgba(0,0,0,.15);
+  box-shadow:0 3px 12px rgba(0,0,0,.16);
 
-    padding:12px;
+  padding:14px;
+
+  text-align:left;
 
 }
 
 .card img{
 
-    width:100%;
+  width:100%;
 
-    height:220px;
+  height:240px;
 
-    object-fit:contain;
+  object-fit:contain;
 
-    border-radius:8px;
+  background:#fafafa;
 
-    background:#fafafa;
+  border-radius:10px;
 
 }
 
 .card h3{
 
-    margin:12px 0;
+  font-size:18px;
+
+  margin:12px 0 6px;
+
+  color:#6b1e1e;
+
+}
+
+.meta{
+
+  font-size:14px;
+
+  color:#555;
+
+  margin:4px 0;
 
 }
 
 .price{
 
-    font-size:22px;
+  margin-top:10px;
 
-    color:#6b1e1e;
+  font-size:21px;
 
-    font-weight:bold;
+  color:#0f6b2b;
+
+  font-weight:bold;
+
+}
+
+.badge{
+
+  display:inline-block;
+
+  margin-top:8px;
+
+  padding:4px 8px;
+
+  border-radius:999px;
+
+  background:#efe3d2;
+
+  font-size:12px;
+
+  color:#5a3b20;
 
 }
 
@@ -147,30 +204,23 @@ input{
 
 <header>
 
-<h1>🏆 Bower Vintage Card Vault</h1>
+  <h1>🏆 Bower Vintage Card Vault</h1>
 
-<p>Searchable collection powered by Google Sheets</p>
+  <p>Searchable collection powered by Google Sheets and GitHub images</p>
 
 </header>
 
-<div style="text-align:center;padding:25px;">
+<nav>
 
-<button onclick="loadVault('collection')">Collection</button>
+  <button onclick="loadVault('collection')">Collection</button>
 
-<button onclick="loadVault('mantle')">Mantle Wing</button>
+  <button onclick="loadVault('mantle')">Mantle Wing</button>
 
-<br><br>
+</nav>
 
-<input
+<input id="searchBox" placeholder="Search player, year, company, grade..." onkeyup="searchVault()">
 
-id="searchBox"
-
-placeholder="Search player, year, company..."
-
-onkeyup="searchVault()">
-<div id="summary"></div>
-
-</div>
+<div id="summary">Choose a section above.</div>
 
 <div id="cards"></div>
 
@@ -184,105 +234,139 @@ const SHEETS = {
 
 };
 
-let SHEET_URL = SHEETS.collection;
+let allCards = [];
 
-let currentSection = "Collection";
-let allRows=[];
+let currentSection = "";
 
-function loadVault(section="collection"){
+function loadVault(section){
 
-  SHEET_URL = SHEETS[section];
+  currentSection = section;
 
-  currentSection = section === "mantle" ? "Mantle Wing" : "Collection";
+  fetch(SHEETS[section])
 
-fetch(SHEET_URL)
+    .then(response => response.text())
 
-.then(r=>r.text())
+    .then(csv => {
 
-.then(text=>{
+      allCards = parseCSV(csv);
 
-const rows=text.trim().split("\n").map(r=>r.split(","));
+      showCards(allCards);
 
-const headers=rows.shift();
-
-allRows=rows.map(r=>{
-
-let obj={};
-
-headers.forEach((h,i)=>{
-
-obj[h.trim()]=r[i];
-
-});
-
-return obj;
-
-});
-
-showRows(allRows);
-
-});
+    });
 
 }
 
-function showRows(rows){
+function parseCSV(csv){
 
-document.getElementById("summary").innerHTML=
+  const rows = csv.trim().split("\n").map(row => row.split(","));
 
-"Showing "+rows.length+" cards";
+  const headers = rows.shift().map(h => h.trim());
 
-let html="";
+  return rows.map(row => {
 
-rows.forEach(card=>{
+    let obj = {};
 
-let id = card["ID"] || "";
+    headers.forEach((header, i) => {
 
-let baseName = card["BASE NAME"] || "";
+      obj[header] = row[i] ? row[i].trim() : "";
 
-let photo = `images/${id}_${baseName}_1.jpg`;
+    });
 
-html +=`
+    return obj;
 
-<div class="card">
+  });
 
-  <a href="${photo}" target="_blank">
+}
 
-    <img src="${photo}">
+function imagePath(card){
 
-  </a>
+  const id = card["ID"] || "";
 
-  <h3>${card["PLAYER"] || ""}</h3>
+  const base = card["BASE NAME"] || "";
 
-  <div><strong>${card["YEAR"] || ""} ${card["FILTER_CO"] || ""}</strong></div>
+  return `images/${id}_${base}_1.jpg`;
 
-  <div>${card["FILTER_SPORT"] || ""} • ${card["FILTER_ERA"] || ""}</div>
+}
 
-  <div>${card["EST GRADE"] || ""}</div>
+function showCards(cards){
 
-  <div class="price">$${card["EST VALUE"] || card["EST GRADED VALUE"] || ""}</div>
+  const container = document.getElementById("cards");
 
-  <div style="font-size:12px;color:#777;">${card["GRADE STATUS"] || ""}</div>
-</div>
+  container.innerHTML = "";
 
-`;
+  document.getElementById("summary").innerHTML =
 
-})
+    `${cards.length} records showing from ${sectionName(currentSection)}`;
 
-document.getElementById("cards").innerHTML=html;
+  cards.forEach(card => {
+
+    const photo = imagePath(card);
+
+    const value = card["EST VALUE"] || card["EST GRADED VALUE"] || "";
+
+    const player = card["PLAYER"] || "";
+
+    const year = card["YEAR"] || "";
+
+    const company = card["FILTER_CO"] || card["COMPANY"] || "";
+
+    const sport = card["FILTER_SPORT"] || card["SPORT"] || "";
+
+    const era = card["FILTER_ERA"] || "";
+
+    const grade = card["EST GRADE"] || "";
+
+    const status = card["GRADE STATUS"] || "";
+
+    container.innerHTML += `
+
+      <div class="card">
+
+        <a href="${photo}" target="_blank">
+
+          <img src="${photo}" onerror="this.style.display='none'">
+
+        </a>
+
+        <h3>${player}</h3>
+
+        <div class="meta"><strong>${year} ${company}</strong></div>
+
+        <div class="meta">${sport} ${era ? "• " + era : ""}</div>
+
+        <div class="meta">${grade}</div>
+
+        <div class="price">${value}</div>
+
+        <div class="badge">${status}</div>
+
+      </div>
+
+    `;
+
+  });
 
 }
 
 function searchVault(){
 
-const q=document.getElementById("searchBox").value.toLowerCase();
+  const q = document.getElementById("searchBox").value.toLowerCase();
 
-const filtered=allRows.filter(r=>
+  const filtered = allCards.filter(card =>
 
-JSON.stringify(r).toLowerCase().includes(q)
+    JSON.stringify(card).toLowerCase().includes(q)
 
-);
+  );
 
-showRows(filtered);
+  showCards(filtered);
+
+}
+
+function sectionName(section){
+
+  if(section === "mantle") return "Mantle Wing";
+
+  return "Collection";
 
 }
 
