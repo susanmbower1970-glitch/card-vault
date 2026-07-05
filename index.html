@@ -258,49 +258,25 @@ function loadVault(section){
 
 function parseCSV(csv){
 
-  const rows = [];
+  const rows = csv.trim().split("\n").map(row => row.split(","));
 
-  let currentRow = [];
+  const headers = rows.shift().map(h => h.trim());
 
-  let currentValue = "";
+  return rows.map(row => {
 
-  let insideQuotes = false;
+    let obj = {};
 
-  for(let i = 0; i < csv.length; i++){
+    headers.forEach((header, i) => {
 
-    const char = csv[i];
+      obj[header] = row[i] ? row[i].trim() : "";
 
-    const nextChar = csv[i + 1];
+    });
 
-    if(char === '"' && insideQuotes && nextChar === '"'){
+    return obj;
 
-      currentValue += '"';
+  });
 
-      i++;
-
-    } else if(char === '"'){
-
-      insideQuotes = !insideQuotes;
-
-    } else if(char === ',' && !insideQuotes){
-
-      currentRow.push(currentValue.trim());
-
-      currentValue = "";
-
-    } else if((char === '\n' || char === '\r') && !insideQuotes){
-
-      if(currentValue || currentRow.length){
-
-        currentRow.push(currentValue.trim());
-
-        rows.push(currentRow);
-
-        currentRow = [];
-
-        currentValue = "";
-
-      }
+}
 
       if(char === '\r' && nextChar === '\n') i++;
 
