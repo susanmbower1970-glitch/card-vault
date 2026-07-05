@@ -218,17 +218,15 @@ let html="";
 
 rows.forEach(card=>{
 
-let photo=card["Photo Link"] || "";
+let photo = `images/${card["ID"]}_${card["BASE NAME"]}_1.jpg`;
 
-photo=photo.replace("/view?usp=drivesdk","/preview");
-
-html+=`
+html +=`
 
 <div class="card">
 
 <a href="${photo}" target="_blank">
 
-<img src="${photo}">
+<img src="${photo}" onerror="this.style.display='none'">
 
 </a>
 
