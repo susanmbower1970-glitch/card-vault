@@ -234,17 +234,17 @@ html +=`
 
 </a>
 
-233  <h3>${card.Player || ""}</h3>
+<h3>${card["PLAYER"] || ""}</h3>
 
-235  <div><strong>${card.Year || ""} ${card.Company || ""}</strong></div>
+<div><strong>${card["YEAR"] || ""} ${card["FILTER_CO"] || ""}</strong></div>
 
-237  <div>${card.Sport || ""} • ${card["FILTER_ERA"] || ""}</div>
+<div>${card["FILTER_SPORT"] || ""} • ${card["FILTER_ERA"] || ""}</div>
 
-239  <div>${card["EST GRADE"] || ""}</div>
+<div>${card["EST GRADE"] || ""}</div>
 
-241  <div class="price">$${card["EST VALUE"] || ""}</div>
+<div class="price">$${card["EST VALUE"] || ""}</div>
 
-243  <div style="font-size:12px;color:#777;">${card["GRADE STATUS"] || ""}</div>
+<div style="font-size:12px;color:#777;">${card["GRADE STATUS"] || ""}</div>
 
 `;
 
