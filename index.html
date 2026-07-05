@@ -230,15 +230,15 @@ html +=`
 
 </a>
 
-<h3>${card.Player||""}</h3>
+<h3>${card["PLAYER"]||""}</h3>
 
-<div>${card.Year||""}</div>
+<div>${card["YEAR"]||""}</div>
 
-<div>${card.Company||""}</div>
+<div>${card["FILTER_CO"]||""}</div>
 
-<div>${card.Sport||""}</div>
+<div>${card["FILTER_SPORT"]||""}</div>
 
-<div class="price">$${card["Estimated Value"]||card.Value||""}</div>
+<div class="price">${card["EST VALUE"]||""}</div>
 
 </div>
 
