@@ -218,7 +218,11 @@ let html="";
 
 rows.forEach(card=>{
 
-let photo = `images/${card["ID"]}_${card["BASE NAME"]}_1.jpg`;
+let id = card["ID"] || "";
+
+let baseName = card["BASE NAME"] || "";
+
+let photo = `images/${id}_${baseName}_1.jpg`;
 
 html +=`
 
@@ -226,25 +230,25 @@ html +=`
 
 <a href="${photo}" target="_blank">
 
-<img src="${photo}" onerror="this.style.display='none'">
+<img src="${photo}">
 
 </a>
 
-<h3>${card["PLAYER"]||""}</h3>
+<h3>${card["PLAYER"] || ""}</h3>
 
-<div>${card["YEAR"]||""}</div>
+<div>${card["YEAR"] || ""}</div>
 
-<div>${card["FILTER_CO"]||""}</div>
+<div>${card["FILTER_CO"] || ""}</div>
 
-<div>${card["FILTER_SPORT"]||""}</div>
+<div>${card["FILTER_SPORT"] || ""}</div>
 
-<div class="price">${card["EST VALUE"]||""}</div>
+<div class="price">${card["EST VALUE"] || ""}</div>
 
 </div>
 
 `;
 
-});
+})
 
 document.getElementById("cards").innerHTML=html;
 
