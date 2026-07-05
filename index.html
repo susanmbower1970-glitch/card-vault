@@ -155,7 +155,11 @@ input{
 
 <div style="text-align:center;padding:25px;">
 
-<button onclick="loadVault()">Load Collection</button><br>
+<button onclick="loadVault('collection')">Collection</button>
+
+<button onclick="loadVault('mantle')">Mantle Wing</button>
+
+<br><br>
 
 <input
 
@@ -164,7 +168,6 @@ id="searchBox"
 placeholder="Search player, year, company..."
 
 onkeyup="searchVault()">
-
 <div id="summary"></div>
 
 </div>
@@ -173,11 +176,24 @@ onkeyup="searchVault()">
 
 <script>
 
-const SHEET_URL="https://docs.google.com/spreadsheets/d/e/2PACX-1vQV7ChVBPYdSjWQLF59zz6zBh-eAJFy4Cyr5pj71R6OGUkhVCjpJf-7FqjuypDAX-advzSjqwR3N6KL/pub?gid=2143494676&single=true&output=csv";
+const SHEETS = {
 
+  collection: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQV7ChVBPYdSjWQLF59zz6zBh-eAJFy4Cyr5pj71R6OGUkhVCjpJf-7FqjuypDAX-advzSjqwR3N6KL/pub?gid=2143494676&single=true&output=csv",
+
+  mantle: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQV7ChVBPYdSjWQLF59zz6zBh-eAJFy4Cyr5pj71R6OGUkhVCjpJf-7FqjuypDAX-advzSjqwR3N6KL/pub?gid=2034525918&single=true&output=csv"
+
+};
+
+let SHEET_URL = SHEETS.collection;
+
+let currentSection = "Collection";
 let allRows=[];
 
-function loadVault(){
+function loadVault(section="collection"){
+
+  SHEET_URL = SHEETS[section];
+
+  currentSection = section === "mantle" ? "Mantle Wing" : "Collection";
 
 fetch(SHEET_URL)
 
