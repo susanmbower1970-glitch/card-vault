@@ -302,7 +302,11 @@ function showCards(cards){
 
     const photo = imagePath(card);
 
-    const value = card["EST VALUE"] || card["EST GRADED VALUE"] || "";
+    const value = currentSection === "mantle"
+
+  ? (card["EST GRADED VALUE"] || card["EST VALUE"] || "")
+
+  : (card["EST VALUE"] || card["EST GRADED VALUE"] || "");
 
     const player = card["PLAYER"] || "";
 
