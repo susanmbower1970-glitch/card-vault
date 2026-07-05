@@ -232,6 +232,8 @@ button:hover{
 
   <button onclick="loadVault('mantle')">Mantle Wing</button>
 
+  <button onclick="loadVault('graded')">Graded Cards</button>
+
 </nav>
 
 <input id="searchBox" placeholder="Search player, year, company, grade..." onkeyup="searchVault()">
@@ -246,7 +248,9 @@ const SHEETS = {
 
   collection: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQV7ChVBPYdSjWQLF59zz6zBh-eAJFy4Cyr5pj71R6OGUkhVCjpJf-7FqjuypDAX-advzSjqwR3N6KL/pub?gid=2143494676&single=true&output=csv",
 
-  mantle: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQV7ChVBPYdSjWQLF59zz6zBh-eAJFy4Cyr5pj71R6OGUkhVCjpJf-7FqjuypDAX-advzSjqwR3N6KL/pub?gid=2034525918&single=true&output=csv"
+  mantle: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQV7ChVBPYdSjWQLF59zz6zBh-eAJFy4Cyr5pj71R6OGUkhVCjpJf-7FqjuypDAX-advzSjqwR3N6KL/pub?gid=2034525918&single=true&output=csv",
+
+  graded: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQV7ChVBPYdSjWQLF59zz6zBh-eAJFy4Cyr5pj71R6OGUkhVCjpJf-7FqjuypDAX-advzSjqwR3N6KL/pub?gid=1360818986&single=true&output=csv"
 
 };
 
@@ -461,6 +465,8 @@ function searchVault(){
 function sectionName(section){
 
   if(section === "mantle") return "Mantle Wing";
+
+  if(section === "graded") return "Graded Cards";
 
   return "Collection";
 
