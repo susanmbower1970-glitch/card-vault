@@ -234,6 +234,8 @@ button:hover{
 
   <button onclick="loadVault('graded')">Graded Cards</button>
 
+  <button onclick="loadVault('mattingly')">Mattingly Wing</button>
+
 </nav>
 
 <input id="searchBox" placeholder="Search player, year, company, grade..." onkeyup="searchVault()">
@@ -250,7 +252,9 @@ const SHEETS = {
 
   mantle: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQV7ChVBPYdSjWQLF59zz6zBh-eAJFy4Cyr5pj71R6OGUkhVCjpJf-7FqjuypDAX-advzSjqwR3N6KL/pub?gid=2034525918&single=true&output=csv",
 
-  graded: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQV7ChVBPYdSjWQLF59zz6zBh-eAJFy4Cyr5pj71R6OGUkhVCjpJf-7FqjuypDAX-advzSjqwR3N6KL/pub?gid=1360818986&single=true&output=csv"
+  graded: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQV7ChVBPYdSjWQLF59zz6zBh-eAJFy4Cyr5pj71R6OGUkhVCjpJf-7FqjuypDAX-advzSjqwR3N6KL/pub?gid=1360818986&single=true&output=csv",
+
+  mattingly: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQV7ChVBPYdSjWQLF59zz6zBh-eAJFy4Cyr5pj71R6OGUkhVCjpJf-7FqjuypDAX-advzSjqwR3N6KL/pub?gid=21370298&single=true&output=csv"
 
 };
 
@@ -467,6 +471,8 @@ function sectionName(section){
   if(section === "mantle") return "Mantle Wing";
 
   if(section === "graded") return "Graded Cards";
+
+  if(section === "mattingly") return "Mattingly Wing";
 
   return "Collection";
 
